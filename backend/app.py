@@ -1,7 +1,12 @@
 from flask import Flask, jsonify, request
+
 import requests
+from flask import Flask, jsonify, request
 
 app = Flask(__name__)
+
+API_TOKEN = "wJlO2hE6FKj1b3mE1gcU2mvufbL7K2Q7ilFvOVAOH4P6qgC9yjfyP5wJf6Yh"
+BASE_URL = "https://api.sportmonks.com/v3/football"
 
 @app.route('/')
 def home_page():
@@ -11,31 +16,24 @@ def home_page():
 def get_all_players():
     """This function returns a list of EPL players for a selected season."""
     season = request.args.get('season', '2023')
-    api_url = f"https://api-football-v1.p.rapidapi.com/v3/players?league=39&season={season}"
+    api_url = f"{BASE_URL}/players?api_token={API_TOKEN}&season={season}"
 
     try:
-        response = requests.get(api_url, headers={
-            'X-RapidAPI-Key': "XxXxXxXxXxXxXxXxXxXxXxXxXx",
-            'X-RapidAPI-Host': "api-football-v1.p.rapidapi.com"
-        })
-
+        response = requests.get(api_url)
         response.raise_for_status()
         players_data = response.json()
         return jsonify(players_data)
     except requests.exceptions.RequestException as e:
         return jsonify(error=str(e)), 500
+
 @app.route('/api/teams', methods=['GET'])
 def get_all_teams():
     """This function returns a list of all EPL teams for the selected season."""
     season = request.args.get('season', '2023')
-    api_url = f"https://api-football-v1.p.rapidapi.com/v3/teams?league=39&season={season}"
+    api_url = f"{BASE_URL}/teams?api_token={API_TOKEN}&season={season}"
 
     try:
-        response = requests.get(api_url, headers={
-            'X-RapidAPI-Key': "XxXxXxXxXxXxXxXxXxXxXxXxXx",
-            'X-RapidAPI-Host': "api-football-v1.p.rapidapi.com"
-        })
-
+        response = requests.get(api_url)
         response.raise_for_status()
         teams_data = response.json()
         return jsonify(teams_data)
@@ -45,16 +43,12 @@ def get_all_teams():
 @app.route('/api/teams/<string:team_id>', methods=['GET'])
 def get_team_details(team_id):
     """This function returns detailed information about a specific EPL team."""
-    api_url = f"https://api-football-v1.p.rapidapi.com/v3/teams?id={team_id}"
+    api_url = f"{BASE_URL}/teams/{team_id}?api_token={API_TOKEN}"
 
     try:
-        response = request.get(api_url, headers={
-            'X-RapidAPI-Key': "XxXxXxXxXxXxXxXxXxXxXxXx",
-            'X-RapidAPI-Host': "v3.football.api-sports.io"
-            })
-        
+        response = requests.get(api_url)
         response.raise_for_status()
-        team_details = response.json
+        team_details = response.json()
         return jsonify(team_details)
     except requests.exceptions.RequestException as e:
         return jsonify(error=str(e)), 500
@@ -63,14 +57,10 @@ def get_team_details(team_id):
 def get_all_matches():
     """This function returns a list of all EPL matches for the selected season."""
     season = request.args.get('season', '2023')
-    api_url = f"https://api-football-v1.p.rapidapi.com/v3/fixtures?league=39&season={season}"
+    api_url = f"{BASE_URL}/fixtures?api_token={API_TOKEN}&season={season}"
 
     try:
-        response = requests.get(api_url, headers={
-            'X-RapidAPI-Key': "XxXxXxXxXxXxXxXxXxXxXxXxXx",
-            'X-RapidAPI-Host': "api-football-v1.p.rapidapi.com"
-        })
-
+        response = requests.get(api_url)
         response.raise_for_status()
         matches_data = response.json()
         return jsonify(matches_data)
@@ -80,14 +70,10 @@ def get_all_matches():
 @app.route('/api/matches/<string:match_id>', methods=['GET'])
 def get_match_details(match_id):
     """This function returns detailed information for a specific EPL match."""
-    api_url = f"https://api-football-v1.p.rapidapi.com/v3/fixtures?id={match_id}"
+    api_url = f"{BASE_URL}/fixtures/{match_id}?api_token={API_TOKEN}"
 
     try:
-        response = requests.get(api_url, headers={
-            'X-RapidAPI-Key': "XxXxXxXxXxXxXxXxXxXxXxXxXx",
-            'X-RapidAPI-Host': "api-football-v1.p.rapidapi.com"
-        })
-
+        response = requests.get(api_url)
         response.raise_for_status()
         match_details = response.json()
         return jsonify(match_details)
@@ -97,7 +83,7 @@ def get_match_details(match_id):
 @app.route('/player/<string:player_id>', methods=['GET'])
 def get_player_stats(player_id):
     """This function gets the stats of the EPL players."""
-    api_url = f"https://api-football.com/players/{player_id}/stats/"
+    api_url = f"{BASE_URL}/players/{player_id}/stats?api_token={API_TOKEN}"
 
     try:
         response = requests.get(api_url)
@@ -106,23 +92,95 @@ def get_player_stats(player_id):
         return jsonify(player_stats)
     except requests.exceptions.RequestException as e:
         return jsonify(error=str(e)), 500
-    
+
 @app.route('/api/players/<string:player_id>', methods=['GET'])
 def get_player_details(player_id):
     """This function acquires the information of a player."""
-    api_url = f"https://api-football-v1.p.rapidapi.com/v3/players?id={player_id}&season=2023"
+    api_url = f"{BASE_URL}/players/{player_id}?api_token={API_TOKEN}&season=2023"
 
     try:
-        response = requests.get(api_url, headers={
-            'X-RapidAPI-Key': "XxXxXxXxXxXxXxXxXxXxXxXx",
-            'X-RapidAPI-Host': "api-football-v1.p.rapidapi.com"
-        })
-        
+        response = requests.get(api_url)
         response.raise_for_status()
         player_details = response.json()
         return jsonify(player_details)
     except requests.exceptions.RequestException as e:
         return jsonify(error=str(e)), 500
+    
+@app.route('/api/players', methods=['POST'])
+def add_player():
+    """This function allows adding a new player to the database."""
+    player_data = request.get_json()
+
+    if not player_data:
+        return jsonify(error="No player data provided"), 400
+
+    return jsonify(message="Player added successfully", player=player_data), 201
+
+@app.route('/api/players/<string:player_id>', methods=['PUT'])
+def update_player(player_id):
+    """This function updates a player's information."""
+    updated_data = request.get_json()
+
+    if not updated_data:
+        return jsonify(error="No data provided for updating"), 400
+
+    return jsonify(message=f"Player {player_id} updated successfully", player=updated_data), 200
+
+@app.route('/api/players/<string:player_id>', methods=['DELETE'])
+def delete_player(player_id):
+    """This function deletes a player's data."""
+    return jsonify(message=f"Player {player_id} deleted successfully"), 200
+
+@app.route('/api/teams', methods=['POST'])
+def add_team():
+    """This function allows adding a new team to the database."""
+    team_data = request.get_json()
+
+    if not team_data:
+        return jsonify(error="No team data provided"), 400
+
+    return jsonify(message="Team added successfully", team=team_data), 201
+
+@app.route('/api/teams/<string:team_id>', methods=['PUT'])
+def update_team(team_id):
+    """This function updates a team's information."""
+    updated_data = request.get_json()
+
+    if not updated_data:
+        return jsonify(error="No data provided for updating"), 400
+
+    return jsonify(message=f"Team {team_id} updated successfully", team=updated_data), 200
+
+@app.route('/api/teams/<string:team_id>', methods=['DELETE'])
+def delete_team(team_id):
+    """This function deletes a team's data."""
+    return jsonify(message=f"Team {team_id} deleted successfully"), 200
+
+@app.route('/api/matches', methods=['POST'])
+def add_match():
+    """This function allows adding a new match to the database."""
+    match_data = request.get_json()
+
+    if not match_data:
+        return jsonify(error="No match data provided"), 400
+
+    return jsonify(message="Match added successfully", match=match_data), 201
+
+@app.route('/api/matches/<string:match_id>', methods=['PUT'])
+def update_match(match_id):
+    """This function updates a match's information."""
+    updated_data = request.get_json()
+
+    if not updated_data:
+        return jsonify(error="No data provided for updating"), 400
+
+    return jsonify(message=f"Match {match_id} updated successfully", match=updated_data), 200
+
+@app.route('/api/matches/<string:match_id>', methods=['DELETE'])
+def delete_match(match_id):
+    """This function deletes a match's data.""" 
+    return jsonify(message=f"Match {match_id} deleted successfully"), 200
+
 
 if __name__ == '__main__':
     app.run(debug=True, port=5001)

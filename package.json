@@ -1,0 +1,18 @@
+{
+  "name": "my_portfolio_project-alx",
+  "version": "1.0.0",
+  "description": "A frontend web service for displaying EPL stats built using webpack.",
+  "main": "public/bundle.js",
+  "scripts": {
+    "build": "webpack --config webpack.config.js",
+    "start": "webpack serve --open --config webpack.config.js"
+  },
+  "keywords": ["EPL", "stats", "frontend", "webpack"],
+  "author": "Alex",
+  "license": "ISC",
+  "devDependencies": {
+    "webpack": "^5.94.0",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^4.15.0"
+  }
+}

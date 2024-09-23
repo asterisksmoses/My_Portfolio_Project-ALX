@@ -1,0 +1,25 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+}
+
+h1, h2 {
+    color: #343a40;
+}
+
+#players-list, #teams-list, #matches-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+
+.player-card, .team-card, .match-card {
+    background-color: white;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    padding: 20px;
+    margin: 10px;
+    width: 250p;
+    text-align: center;
+}
