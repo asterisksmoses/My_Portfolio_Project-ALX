@@ -4,7 +4,7 @@ import requests
 import pymysql
 from flask import Flask, jsonify, request
 
-db = mysql.connector.connect(
+db = pymysql.connect(
     host="localhost",
     user="root",
     password="Vicario123",
@@ -276,4 +276,5 @@ def delete_match(match_id):
 
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5001)
+    from waitress import serve
+    serve(app, host='0.0.0.0', port=5001)
