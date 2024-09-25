@@ -1,97 +1,131 @@
-document.addEventListener("DOMContentLoaded", function () {
-    // Fetch players
-    fetchPlayers();
+const playerList = document.getElementById('player-list');
+const teamList = document.getElementById('team-list');
+const matchList = document.getElementById('match-list');
 
-    // Fetch teams
-    fetchTeams();
+// Function to show loading state
+function showLoading() {
+    const loadingDiv = document.createElement('div');
+    loadingDiv.classList.add('loading');
+    loadingDiv.textContent = 'Loading...';
+    document.body.appendChild(loadingDiv);
+}
 
-    // Fetch matches
-    fetchMatches();
-
-    // Search player functionality
-    document.getElementById('search-player').addEventListener('keyup', searchPlayer);
-
-    function fetchPlayers() {
-        fetch('/api/players?season=2023')
-            .then(response => response.json())
-            .then(data => {
-                displayPlayers(data.response);
-            })
-            .catch(error => console.error('Error fetching players:', error));
+// Function to hide loading state
+function hideLoading() {
+    const loadingDiv = document.querySelector('.loading');
+    if (loadingDiv) {
+        loadingDiv.remove();
     }
+}
 
-    function fetchTeams() {
-        fetch('/api/teams?season=2023')
-            .then(response => response.json())
-            .then(data => {
-                displayTeams(data.response);
-            })
-            .catch(error => console.error('Error fetching teams:', error));
-    }
+// Function to display errors
+function displayError(message) {
+    const errorDiv = document.createElement('div');
+    errorDiv.classList.add('error');
+    errorDiv.textContent = message;
+    document.body.appendChild(errorDiv);
+}
 
-    function fetchMatches() {
-        fetch('/api/matches?season=2023')
-            .then(response => response.json())
-            .then(data => {
-                displayMatches(data.response);
-            })
-            .catch(error => console.error('Error fetching matches:', error));
+// Function to fetch and display players
+async function fetchPlayers() {
+    try {
+        showLoading();
+        const response = await fetch('/api/players');
+        const data = await response.json();
+        hideLoading();
+        displayPlayers(data);
+    } catch (error) {
+        hideLoading();
+        console.error('Error fetching players:', error);
+        displayError('Failed to load player data.');
     }
+}
 
-    function displayPlayers(players) {
-        const playersList = document.getElementById('players-list');
-        playersList.innerHTML = '';
-        players.forEach(player => {
-            const playerCard = `
-                <div class="player-card">
-                    <h3>${player.player.name}</h3>
-                    <p>Team: ${player.statistics[0].team.name}</p>
-                    <p>Goals: ${player.statistics[0].goals.total}</p>
-                </div>
-            `;
-            playersList.innerHTML += playerCard;
-        });
+function displayPlayers(players) {
+    playerList.innerHTML = '';
+    if (players.length === 0) {
+        playerList.textContent = 'No players found.';
+        return;
     }
+    players.forEach(player => {
+        const playerCard = document.createElement('div');
+        playerCard.classList.add('card');
+        playerCard.innerHTML = `
+            <h3>${player.name}</h3>
+            <p>Team: ${player.team}</p>
+            <p>Goals: ${player.goals}</p>
+            <p>Assists: ${player.assists}</p>
+        `;
+        playerList.appendChild(playerCard);
+    });
+}
 
-    function displayTeams(teams) {
-        const teamsList = document.getElementById('teams-list');
-        teamsList.innerHTML = '';
-        teams.forEach(team => {
-            const teamCard = `
-                <div class="team-card">
-                    <h3>${team.team.name}</h3>
-                    <img src="${team.team.logo}" alt="${team.team.name}" width="50">
-                </div>
-            `;
-            teamsList.innerHTML += teamCard;
-        });
+// Fetch and display teams
+async function fetchTeams() {
+    try {
+        showLoading();
+        const response = await fetch('/api/teams');
+        const data = await response.json();
+        hideLoading();
+        displayTeams(data);
+    } catch (error) {
+        hideLoading();
+        console.error('Error fetching teams:', error);
+        displayError('Failed to load team data.');
     }
+}
 
-    function displayMatches(matches) {
-        const matchesList = document.getElementById('matches-list');
-        matchesList.innerHTML = '';
-        matches.forEach(match => {
-            const matchCard = `
-                <div class="match-card">
-                    <h3>${match.teams.home.name} vs ${match.teams.away.name}</h3>
-                    <p>Date: ${match.fixture.date}</p>
-                    <p>Status: ${match.fixture.status.short}</p>
-                </div>
-            `;
-            matchesList.innerHTML += matchCard;
-        });
+function displayTeams(teams) {
+    teamList.innerHTML = '';
+    if (teams.length === 0) {
+        teamList.textContent = 'No teams found.';
+        return;
     }
+    teams.forEach(team => {
+        const teamCard = document.createElement('div');
+        teamCard.classList.add('card');
+        teamCard.innerHTML = `
+            <h3>${team.name}</h3>
+            <p>Wins: ${team.wins}</p>
+            <p>Losses: ${team.losses}</p>
+        `;
+        teamList.appendChild(teamCard);
+    });
+}
 
-    function searchPlayer() {
-        const searchQuery = document.getElementById('search-player').value.toLowerCase();
-        const playerCards = document.querySelectorAll('.player-card');
-        playerCards.forEach(card => {
-            const playerName = card.querySelector('h3').textContent.toLowerCase();
-            if (playerName.includes(searchQuery)) {
-                card.style.display = '';
-            } else {
-                card.style.display = 'none';
-            }
-        });
+// Fetch matches
+async function fetchMatches() {
+    try {
+        showLoading();
+        const response = await fetch('/api/matches');
+        const data = await response.json();
+        hideLoading();
+        displayMatches(data);
+    } catch (error) {
+        hideLoading();
+        console.error('Error fetching matches:', error);
+        displayError('Failed to load match data.');
     }
-});
+}
+
+function displayMatches(matches) {
+    matchList.innerHTML = '';
+    if (matches.length === 0) {
+        matchList.textContent = 'No matches found.';
+        return;
+    }
+    matches.forEach(match => {
+        const matchCard = document.createElement('div');
+        matchCard.classList.add('card');
+        matchCard.innerHTML = `
+            <h3>${match.homeTeam} vs ${match.awayTeam}</h3>
+            <p>Score: ${match.homeScore} - ${match.awayScore}</p>
+        `;
+        matchList.appendChild(matchCard);
+    });
+}
+
+// Call the functions to fetch and display data
+fetchPlayers();
+fetchTeams();
+fetchMatches();

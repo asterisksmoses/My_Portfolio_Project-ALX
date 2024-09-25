@@ -1,25 +1,38 @@
 body {
     font-family: Arial, sans-serif;
-    background-color: #f8f9fa;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
 }
 
-h1, h2 {
-    color: #343a40;
+header {
+    background-color: #282c34;
+    color: white;
+    padding: 20px;
+    text-align: center;
 }
 
-#players-list, #teams-list, #matches-list {
+nav a {
+    color: white;
+    margin: 0 15px;
+    text-decoration: none;
+}
+
+section {
+    padding: 20px;
+    margin-top: 20px;
+}
+
+#player-list, #team-list, #match-list {
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-around;
+    gap: 20px;
 }
 
-.player-card, .team-card, .match-card {
+.card {
     background-color: white;
-    border: 1px solid #dee2e6;
     border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    padding: 20px;
-    margin: 10px;
-    width: 250p;
-    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    width: 300px;
 }

@@ -1,3 +1,32 @@
 {
-    "sqltools.connections": []
+    "sqltools.connections": [
+        {
+            "mysqlOptions": {
+                "authProtocol": "default",
+                "enableSsl": "Disabled"
+            },
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 3306,
+            "driver": "MySQL",
+            "name": "My First SQL connection",
+            "username": "root",
+            "database": "",
+            "connectionTimeout": 30
+        },
+        {
+            "mysqlOptions": {
+                "authProtocol": "default",
+                "enableSsl": "Disabled"
+            },
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 3306,
+            "driver": "MySQL",
+            "name": "My First SQL connection",
+            "username": "root",
+            "database": "Football_Statistics",
+            "connectionTimeout": 30
+        }
+    ]
 }

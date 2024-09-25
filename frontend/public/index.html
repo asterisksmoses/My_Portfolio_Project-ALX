@@ -3,33 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EPL Stats Dashboard</title>
+    <title>Football Player Stats</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
 </head>
 <body>
-    <div class="container">
-        <header class="my-4">
-            <h1 class="text-center">EPL Stats Dashboard</h1>
-        </header>
+    <header>
+        <h1>Welcome to Football Stats</h1>
+        <nav>
+            <a href="#players">Players</a>
+            <a href="#teams">Teams</a>
+            <a href="#matches">Matches</a>
+        </nav>
+    </header>
+    
+    <section id="players">
+        <h2>Player Statistics</h2>
+        <div id="player-list">
+            <!-- Player data will be inserted here -->
+        </div>
+    </section>
+    
+    <section id="teams">
+        <h2>Team Statistics</h2>
+        <div id="team-list">
+            <!-- Team data will be inserted here -->
+        </div>
+    </section>
 
-        <section id="players-section">
-            <h2>Players</h2>
-            <input type="text" id="search-player" placeholder="Search player by name" class="form-control">
-            <div id="players-list" class="row"></div>
-        </section>
-
-        <section id="teams-section" class="mt-5">
-            <h2>Teams</h2>
-            <div id="teams-list" class="row"></div>
-        </section>
-
-        <section id="matches-section" class="mt-5">
-            <h2>Matches</h2>
-            <div id="matches-list" class="row"></div>
-        </section>
-    </div>
-
-    <script src="src/app.js"></script>
+    <section id="matches">
+        <h2>Match Information</h2>
+        <div id="match-list">
+            <!-- Match data will be inserted here -->
+        </div>
+    </section>
+    
+    <script src="bundle.js"></script>
 </body>
 </html>

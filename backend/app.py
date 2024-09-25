@@ -1,7 +1,15 @@
 from flask import Flask, jsonify, request
 
 import requests
+import pymysql
 from flask import Flask, jsonify, request
+
+db = mysql.connector.connect(
+    host="localhost",
+    user="root",
+    password="Vicario123",
+    database="Football_Statistics"
+)
 
 app = Flask(__name__)
 
@@ -10,7 +18,7 @@ BASE_URL = "https://api.sportmonks.com/v3/football"
 
 @app.route('/')
 def home_page():
-    return jsonify(message="Welcome to the home of EPL stats.")
+    return jsonify(message="Welcome to the home of Football stats.")
 
 @app.route('/api/players', methods=['GET'])
 def get_all_players():
@@ -113,8 +121,21 @@ def add_player():
 
     if not player_data:
         return jsonify(error="No player data provided"), 400
+    
+    name = player_data.get('name')
+    team = player_data.get('team', None)
+    goals = player_data.get('goals', 0)
+    assists = player_data.get('assists', 0)
 
-    return jsonify(message="Player added successfully", player=player_data), 201
+    try:
+        with db.cursor() as cursor:
+            sql = "INSERT INTO players (name, team, goals, assists) VALUES (%s, %s, %s, %s)"
+            cursor.execute(sql, (name, team, goals, assists))
+            db.commit() 
+
+        return jsonify(message="Player added successfully", player=player_data), 201
+    except Exception as e:
+        return jsonify(error=str(e)), 500
 
 @app.route('/api/players/<string:player_id>', methods=['PUT'])
 def update_player(player_id):
@@ -123,13 +144,37 @@ def update_player(player_id):
 
     if not updated_data:
         return jsonify(error="No data provided for updating"), 400
+    
+    name = updated_data.get('name')
+    team = updated_data.get('team')
+    goals = updated_data.get('goals')
+    assists = updated_data.get('assists')
 
-    return jsonify(message=f"Player {player_id} updated successfully", player=updated_data), 200
+    try:
+        with db.cursor() as cursor:
+            sql = """
+                UPDATE players
+                SET name = %s, team = %s, goals = %s, assists = %s
+                WHERE id = %s
+            """
+            cursor.execute(sql, (name, team, goals, assists, player_id))
+            db.commit()
+            
+        return jsonify(message=f"Player {player_id} updated successfully", player=updated_data), 200
+    except Exception as e:
+        return jsonify(error=str(e)), 500
 
 @app.route('/api/players/<string:player_id>', methods=['DELETE'])
 def delete_player(player_id):
     """This function deletes a player's data."""
-    return jsonify(message=f"Player {player_id} deleted successfully"), 200
+    try:
+        with db.cursor() as cursor:
+            sql = "DELETE FROM players WHERE id = %s"
+            cursor.execute(sql, (player_id))
+            db.commit()
+        return jsonify(message=f"Player {player_id} deleted successfully"), 200
+    except Exception as e:
+        return jsonify(error=str(e)), 500
 
 @app.route('/api/teams', methods=['POST'])
 def add_team():
@@ -138,8 +183,19 @@ def add_team():
 
     if not team_data:
         return jsonify(error="No team data provided"), 400
+    
+    name = team_data.get('name')
+    wins = team_data.get('wins', 0)
+    losses = team_data.get('losses', 0)
 
-    return jsonify(message="Team added successfully", team=team_data), 201
+    try:
+        with db.cursor() as cursor:
+            sql = "INSERT INTO teams (name, wins, losses) VALUES (%s, %s, %s)"
+            cursor.execute(sql, (name, wins, losses))
+            db.commit() 
+        return jsonify(message="Team added successfully", team=team_data), 201
+    except Exception as e:
+        return jsonify(error=str(e)), 500
 
 @app.route('/api/teams/<string:team_id>', methods=['PUT'])
 def update_team(team_id):
@@ -148,13 +204,35 @@ def update_team(team_id):
 
     if not updated_data:
         return jsonify(error="No data provided for updating"), 400
+    
+    name = updated_data.get('name')
+    wins = updated_data.get('wins', 0)
+    losses = updated_data.get('losses', 0)
 
-    return jsonify(message=f"Team {team_id} updated successfully", team=updated_data), 200
+    try:
+        with db.cursor() as cursor:
+            sql = """
+                UPDATE teams
+                SET name = %s, wins = %s, losses = %s
+                WHERE id = %s
+            """
+            cursor.execute(sql, (name, wins, losses, team_id))
+            db.commit()
+        return jsonify(message=f"Team {team_id} updated successfully", team=updated_data), 200
+    except Exception as e:
+        return jsonify(error=str(e)), 500
 
 @app.route('/api/teams/<string:team_id>', methods=['DELETE'])
 def delete_team(team_id):
     """This function deletes a team's data."""
-    return jsonify(message=f"Team {team_id} deleted successfully"), 200
+    try:
+        with db.cursor() as cursor:
+            sql = "DELETE FROM teams WHERE id = %s"
+            cursor.execute(sql, (team_id))
+            db.commit()
+        return jsonify(message=f"Team {team_id} deleted successfully"), 200
+    except Exception as e:
+        return jsonify(error=str(e)), 500
 
 @app.route('/api/matches', methods=['POST'])
 def add_match():
@@ -163,8 +241,23 @@ def add_match():
 
     if not match_data:
         return jsonify(error="No match data provided"), 400
+    
+    home_team = match_data.get('home_team')
+    away_team = match_data.get('away_team')
+    home_score = match_data.get('home_score', 0)
+    away_score = match_data.get('away_score', 0)
 
-    return jsonify(message="Match added successfully", match=match_data), 201
+    try:
+        with db.cursor() as cursor:
+            sql = """
+                INSERT INTO matches (home_team, away_team, home_score, away_score)
+                VALUES (%s, %s, %s, %s)
+            """
+            cursor.execute(sql, (home_team, away_team, home_score, away_score))
+            db.commit()
+        return jsonify(message="Match added successfully", match=match_data), 201
+    except Exception as e:
+        return jsonify(error=str(e)), 500
 
 @app.route('/api/matches/<string:match_id>', methods=['PUT'])
 def update_match(match_id):
