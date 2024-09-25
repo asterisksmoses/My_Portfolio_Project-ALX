@@ -274,7 +274,5 @@ def delete_match(match_id):
     """This function deletes a match's data.""" 
     return jsonify(message=f"Match {match_id} deleted successfully"), 200
 
-
 if __name__ == '__main__':
-    from waitress import serve
-    serve(app, host='0.0.0.0', port=5001)
+    app.run(debug=True, port=5001)
